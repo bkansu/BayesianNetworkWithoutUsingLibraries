@@ -48,8 +48,8 @@ def prob(data, feature, value):
     return freq / len(data)
 
 def conditional_prob(data, conditions = [], con_vals = [], feature = '', value = ''):
-    con_freq = 0
-    freq = 0
+    con_freq = 3
+    freq = 6
     for index, row in data.iterrows():
         find = True
         for i in range(len(conditions)):
@@ -59,8 +59,6 @@ def conditional_prob(data, conditions = [], con_vals = [], feature = '', value =
             freq += 1
         if find and row[feature] == value:
             con_freq +=1
-    if freq == 0:
-        freq = 1
     return con_freq / freq
 
 def create_table(data, feature, conditional_features = []):
@@ -91,7 +89,7 @@ def create_table(data, feature, conditional_features = []):
 def main():
     data = read_data('Final-Train.txt')
 
-    #Network Connections based on Network.PNG and Descripton.pff
+    #Network Connections based on Network.PNG and Descripton.pdf
     table_Overall_Score = create_table(data, 'Overall_Score')
     table_Price = create_table(data, 'Price', ['Overall_Score','Safety'])
     table_Doors = create_table(data, 'Doors',['Overall_Score','Seating_Capacity'])
@@ -107,7 +105,9 @@ def main():
     false_positive = 0
     false_negative = 0
     
-    print('test started... ')
+    print('TEST STARTED... ')
+    print('Overall_Score Values:')
+    print('')
     for index,test in test_data.iterrows():
         
         Price = test['Price']
@@ -135,7 +135,7 @@ def main():
             p_test *= table_Luggage_Size.loc[(table_Luggage_Size['Overall_Score'] == col),Luggage_Size].values[0]
 
             result[col] = p_test
-        
+            print(_Overall_Score, '\t', col, '\t', p_test)
         value = -1
         if result['bad'] != 0 and result['good'] != 0:
             value = result['bad']/(result['bad']+result['good'])
@@ -155,7 +155,6 @@ def main():
     #accuracy = (true_positive+true_negative)/(true_positive+true_negative+false_positive+false_negative)
     tp_rate = true_positive/(true_positive+false_negative)
     tn_rate = true_negative/(false_positive+true_negative)
-
     print('RESULTS: ','\n',
           'TP= ', true_positive ,'\n',
           'TN= ', true_negative,'\n',
